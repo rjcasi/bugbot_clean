@@ -4,6 +4,7 @@ import plotly.graph_objs as go
 import plotly.io as pio
 import plotly.subplots as sp
 from sorting_utils import quicksort_animation, mergesort_animation
+from blockchain_utils import simulate_blockchain
 
 app = Flask(__name__)
 
@@ -43,6 +44,26 @@ def sorting_arena():
     
     return render_template("sorting_arena.html", plot_html=pio.to_html(fig, full_html=False))
 
+@app.route("/blockchain-arena")
+def blockchain_arena():
+    chain, pending_counts = simulate_blockchain()
+    
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=list(range(len(pending_counts))),
+        y=pending_counts,
+        mode="lines+markers",
+        name="Pending Transactions",
+        hoverinfo="text+y",
+        text=[f"Block {i}: {count} pending" for i, count in enumerate(pending_counts)]
+    ))
+    
+    fig.update_layout(title="Blockchain Arena: Transactions Confirmed into Blocks")
+    
+    return render_template("blockchain_arena.html", plot_html=pio.to_html(fig, full_html=False))
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+
 
