@@ -1,179 +1,48 @@
-
-from flask import Flask, jsonify, render_template_string
-import pandas as pd
-import os
+from flask import Flask, render_template
+import random
+import plotly.graph_objs as go
+import plotly.io as pio
+import plotly.subplots as sp
+from sorting_utils import quicksort_animation, mergesort_animation
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
-    return "Welcome to RB-App cockpit!"
-
-@app.route("/hello")
-def hello():
-    return "Hello, recruiter! This is a test route."
-
-# JSON endpoint serving log data
-@app.route("/data")
-def data():
-    log_path = os.path.join(os.path.dirname(__file__), "data", "logger.py")
-    records = []
-    if os.path.exists(log_path):
-        with open(log_path, "r") as f:
-            for line in f:
-                parts = line.strip().split(",")
-                if len(parts) == 3:
-                    timestamp, event, value = parts
-                    try:
-                        value = float(value)
-                        records.append({"timestamp": timestamp, "event": event, "value": value})
-                    except ValueError:
-                        pass
-    return jsonify(records)
-
-# Dashboard with multiple panels
-@app.route("/dashboard")
-def dashboard():
-    html_template = """
-    <html>
-        <head>
-            <title>RB-App Dashboard</title>
-            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 20px; }
-                .panel-container { display: flex; flex-wrap: wrap; gap: 20px; }
-                .panel { flex: 1; min-width: 400px; border: 1px solid #ccc; padding: 10px; }
-                h2 { margin-top: 0; }
-            </style>
-        </head>
-        <body>
-            <h1>Recruiter-Facing Cockpit Dashboard</h1>
-            <div class="panel-container">
-                <div class="panel">
-                    <h2>Anomaly Trends</h2>
-                    <div id="chart1"></div>
-                </div>
-                <div class="panel">
-                    <h2>System Health</h2>
-                    <div id="chart2"></div>
-                </div>
-                <div class="panel">
-                    <h2>Recruiter Notes</h2>
-                    <div id="notes"></div>
-                </div>
-            </div>
-            <script>
-                async function fetchData() {
-                    const response = await fetch('/data');
-                    const records = await response.json();
-                    if (records.length > 0) {
-                        const timestamps = records.map(r => r.timestamp);
-                        const values = records.map(r => r.value);
-                        const events = records.map(r => r.event);
-
-                        // Panel 1: anomaly trends
-                        Plotly.newPlot('chart1', [{
-                            x: timestamps,
-                            y: values,
-                            type: 'scatter',
-                            mode: 'lines+markers',
-                            text: events,
-                            name: 'Log Values'
-                        }], {title: 'Live Log Data'});
-
-                        // Panel 2: system health (dummy gauge for now)
-                        Plotly.newPlot('chart2', [{
-                            type: "indicator",
-                            mode: "gauge+number",
-                            value: values[values.length-1],
-                            title: { text: "System Load" },
-                            gauge: { axis: { range: [0, 100] } }
-                        }]);
-
-                        // Panel 3: recruiter notes (placeholder text)
-                        document.getElementById('notes').innerHTML =
-                            "<p>Last event: " + events[events.length-1] +
-                            " at " + timestamps[timestamps.length-1] + "</p>";
-                    } else {
-                        document.getElementById('chart1').innerHTML = "<p>No log data yet.</p>";
-                        document.getElementById('chart2').innerHTML = "<p>No health data yet.</p>";
-                        document.getElementById('notes').innerHTML = "<p>No notes yet.</p>";
-                    }
-                }
-
-                // Initial load + refresh every 5s
-                fetchData();
-                setInterval(fetchData, 5000);
-            </script>
-        </body>
-    </html>
-    """
-    return render_template_string(html_template)
+@app.route("/sorting-arena")
+def sorting_arena():
+    arr = [random.randint(1, 50) for _ in range(20)]
+    
+    quick_frames, quick_entropy, quick_annotations = quicksort_animation(arr.copy())
+    merge_frames, merge_entropy, merge_annotations = mergesort_animation(arr.copy())
+    
+    fig = sp.make_subplots(rows=1, cols=2, subplot_titles=("Quicksort Arena", "Mergesort Arena"))
+    
+    # Initial bars
+    fig.add_trace(go.Bar(y=arr, marker_color='indianred', name="Quicksort"), row=1, col=1)
+    fig.add_trace(go.Bar(y=arr, marker_color='steelblue', name="Mergesort"), row=1, col=2)
+    
+    # Entropy lines with hover annotations
+    fig.add_trace(go.Scatter(
+        y=quick_entropy,
+        text=quick_annotations,
+        hoverinfo="text+y",
+        mode="lines+markers",
+        name="Quicksort Entropy",
+        line=dict(color="red")
+    ), row=1, col=1)
+    
+    fig.add_trace(go.Scatter(
+        y=merge_entropy,
+        text=merge_annotations,
+        hoverinfo="text+y",
+        mode="lines+markers",
+        name="Mergesort Entropy",
+        line=dict(color="blue")
+    ), row=1, col=2)
+    
+    fig.update_layout(title="Cycles of Order Emerging from Disorder")
+    
+    return render_template("sorting_arena.html", plot_html=pio.to_html(fig, full_html=False))
 
 if __name__ == "__main__":
     app.run(debug=True)
-    
-import streamlit as st
-from red_team import fuzzing
-from blue_team import anomaly, defense_rules
-from panels import attention, drift, introspection, mutation_timeline, replay_playback
-from data import logger
 
-st.set_page_config(page_title="Red/Blue Hacking Cockpit", layout="wide")
-st.title("🧠 Red/Blue Hacking Cockpit")
-
-# Tabs for cockpit sections
-tab1, tab2, tab3 = st.tabs(["Red Team", "Blue Team", "Panels"])
-
-# --- Red Team ---
-with tab1:
-    st.header("Red Team: Offensive Modules")
-    token = fuzzing.fuzz_tokens()
-    result = fuzzing.send_request(token)
-    st.write("Single Fuzzing Result:", result)
-
-    st.subheader("Batch Fuzzing")
-    logs = [fuzzing.send_request(fuzzing.fuzz_tokens()) for _ in range(5)]
-    st.write(logs)
-
-# --- Blue Team ---
-with tab2:
-    st.header("Blue Team: Defensive Modules")
-    logs = [fuzzing.send_request(fuzzing.fuzz_tokens()) for _ in range(10)]
-    st.write("Incoming Events:", logs)
-
-    st.subheader("Defense Decisions")
-    for event in logs:
-        decisions = defense_rules.apply_rules(event)
-        st.write(event, "→", decisions)
-        # Log each fuzzing event
-        logger.log_fuzz_event(event)
-
-    st.subheader("Anomaly Detection")
-    df = anomaly.detect_anomalies(logs)
-    st.write(df)
-
-    st.subheader("Rule Mutations")
-    mutations = defense_rules.evolve_rules()
-    st.write(mutations)
-    for m in mutations:
-        logger.log_mutation(m)
-
-# --- Panels ---
-with tab3:
-    st.header("Cockpit Panels")
-
-    st.subheader("Attention Overlay")
-    attention.show_attention(df)
-
-    st.subheader("Drift Tracker")
-    drift.show_drift([{"rule": "entropy>4", "mutation": "lowered to 3.5"}])
-
-    st.subheader("Multi-Agent Introspection")
-    introspection.compare_agents(["Allowed", "Blocked"], ["Suspicious", "Allowed"])
-
-    st.subheader("Mutation Timeline")
-    mutation_timeline.show_mutation_timeline(mutations)
-
-    st.subheader("Replay & Playback")
-    replay_playback.show_replay_playback()
