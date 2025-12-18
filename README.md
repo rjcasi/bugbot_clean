@@ -1,5 +1,51 @@
 # BugBot Cockpit
 
+BugBot is a recruiter‑facing interactive cockpit that demonstrates core concepts in **cybersecurity, data structures, machine learning, and robotics**.  
+It’s designed as a living organism: each arena is an “organ,” and the Flask app is the “nervous system” that ties them together.
+
+---
+
+## 🚀 Features
+
+### Dashboard
+- Central navigation hub linking all arenas.
+- Clean UI with consistent styling via `base.html`.
+
+### Sorting Arena
+- Visualizes **Quicksort vs Mergesort** side‑by‑side.
+- Entropy plots show cycles of order emerging from disorder.
+
+### Blockchain Arena
+- Simulates block confirmations and pending transactions.
+- Interactive chart of transaction flow into blocks.
+
+### Entropy Arena
+- Compares brute force runtimes and attempts for MD5 vs SHA‑256.
+- Advanced demo includes bcrypt and Argon2 hashing.
+
+### Robotics Arena
+- **Motor Control Demo**: actuator speed and stop sequences.
+- **Arm Kinematics**: 2‑joint planar arm workspace visualization.
+- **Line Following Simulation**: sensor feedback driving robot path corrections.
+
+---
+
+## 🛠️ Tech Stack
+- **Flask** for web routing and cockpit shell.
+- **Plotly** for interactive visualizations.
+- **Python modules** for each arena (`sorting_utils.py`, `blockchain_utils.py`, `entropy_utils.py`, `robotics_utils.py`).
+- **HTML templates** extending `base.html` for consistent UI.
+
+---
+
+## ▶️ How to Run
+1. Clone the repo:
+   ```bash
+   git clone https://github.com/rjcasi/bugbot_clean.git
+   cd bugbot_clean
+
+# BugBot Cockpit
+
 BugBot is a lightweight cybersecurity cockpit demo built in Python and Flask.  
 It showcases anomaly detection, system health monitoring, and recruiter‑friendly dashboards with interactive Plotly charts.
 
