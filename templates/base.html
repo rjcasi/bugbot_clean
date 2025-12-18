@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+  <title>BugBot Cockpit</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    nav { margin-bottom: 20px; }
+    nav a { margin-right: 15px; text-decoration: none; color: #007acc; }
+    nav a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/">Dashboard</a>
+    <a href="/sorting-arena">Sorting Arena</a>
+    <a href="/blockchain-arena">Blockchain Arena</a>
+    <a href="/entropy-arena">Entropy Arena</a>
+    <a href="/robotics-arena">Robotics Arena</a>
+  </nav>
+  {% block content %}{% endblock %}
+</body>
+</html>

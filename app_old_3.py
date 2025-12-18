@@ -3,25 +3,18 @@ import random
 import plotly.graph_objs as go
 import plotly.io as pio
 import plotly.subplots as sp
-
-# Import your arena utilities
 from modules.sorting_utils import quicksort_animation, mergesort_animation
 from modules.blockchain_utils import simulate_blockchain
-from modules.entropy_utils import measure_entropy, bcrypt_hash, argon2_hash
+from modules.entropy_utils import measure_entropy
 from modules.robotics_utils import Motor, forward_kinematics, line_follow_step
+
 
 app = Flask(__name__)
 
-# -------------------------
-# Dashboard
-# -------------------------
 @app.route("/")
 def dashboard():
     return render_template("dashboard.html")
 
-# -------------------------
-# Sorting Arena
-# -------------------------
 @app.route("/sorting-arena")
 def sorting_arena():
     arr = [random.randint(1, 50) for _ in range(20)]
@@ -35,26 +28,29 @@ def sorting_arena():
     fig.add_trace(go.Bar(y=arr, marker_color='indianred', name="Quicksort"), row=1, col=1)
     fig.add_trace(go.Bar(y=arr, marker_color='steelblue', name="Mergesort"), row=1, col=2)
     
-    # Entropy lines
+    # Entropy lines with hover annotations
     fig.add_trace(go.Scatter(
-        y=quick_entropy, text=quick_annotations,
-        hoverinfo="text+y", mode="lines+markers",
-        name="Quicksort Entropy", line=dict(color="red")
+        y=quick_entropy,
+        text=quick_annotations,
+        hoverinfo="text+y",
+        mode="lines+markers",
+        name="Quicksort Entropy",
+        line=dict(color="red")
     ), row=1, col=1)
     
     fig.add_trace(go.Scatter(
-        y=merge_entropy, text=merge_annotations,
-        hoverinfo="text+y", mode="lines+markers",
-        name="Mergesort Entropy", line=dict(color="blue")
+        y=merge_entropy,
+        text=merge_annotations,
+        hoverinfo="text+y",
+        mode="lines+markers",
+        name="Mergesort Entropy",
+        line=dict(color="blue")
     ), row=1, col=2)
     
     fig.update_layout(title="Cycles of Order Emerging from Disorder")
     
     return render_template("sorting_arena.html", plot_html=pio.to_html(fig, full_html=False))
 
-# -------------------------
-# Blockchain Arena
-# -------------------------
 @app.route("/blockchain-arena")
 def blockchain_arena():
     chain, pending_counts = simulate_blockchain()
@@ -73,21 +69,30 @@ def blockchain_arena():
     
     return render_template("blockchain_arena.html", plot_html=pio.to_html(fig, full_html=False))
 
-# -------------------------
-# Entropy Arena
-# -------------------------
 @app.route("/entropy-arena")
 def entropy_arena():
     lengths, md5_times, sha_times, md5_attempts, sha_attempts = measure_entropy()
     
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=lengths, y=md5_times, mode="lines+markers", name="MD5 runtime"))
-    fig.add_trace(go.Scatter(x=lengths, y=sha_times, mode="lines+markers", name="SHA-256 runtime"))
+    fig.add_trace(go.Scatter(
+        x=lengths, y=md5_times,
+        mode="lines+markers", name="MD5 runtime"
+    ))
+    fig.add_trace(go.Scatter(
+        x=lengths, y=sha_times,
+        mode="lines+markers", name="SHA-256 runtime"
+    ))
     fig.update_layout(title="Brute Force Runtime vs Password Length")
     
     fig2 = go.Figure()
-    fig2.add_trace(go.Scatter(x=lengths, y=md5_attempts, mode="lines+markers", name="MD5 attempts"))
-    fig2.add_trace(go.Scatter(x=lengths, y=sha_attempts, mode="lines+markers", name="SHA-256 attempts"))
+    fig2.add_trace(go.Scatter(
+        x=lengths, y=md5_attempts,
+        mode="lines+markers", name="MD5 attempts"
+    ))
+    fig2.add_trace(go.Scatter(
+        x=lengths, y=sha_attempts,
+        mode="lines+markers", name="SHA-256 attempts"
+    ))
     fig2.update_layout(title="Brute Force Attempts vs Password Length")
     
     return render_template("entropy_arena.html",
@@ -107,10 +112,9 @@ def entropy_arena_advanced():
                            bcrypt_hash=bcrypt_h,
                            argon2_hash=argon2_h)
 
-# -------------------------
-# Robotics Arena
-# -------------------------
-@app.route("/robotics-arena")
+
+
+@app.route("/robotics_arena")
 def robotics_arena():
     # Demo motor control
     left_motor = Motor("Left")
@@ -121,20 +125,20 @@ def robotics_arena():
         left_motor.stop(),
         right_motor.stop()
     ]
-    
+
     # Demo kinematics
     x, y = forward_kinematics(0.5, 0.5)
-    
+
     # Demo line-following
     line_demo = [line_follow_step() for _ in range(5)]
-    
+
     return render_template("robotics_arena.html",
                            motor_demo=motor_demo,
                            kinematics=(x, y),
                            line_demo=line_demo)
 
-# -------------------------
-# Run App
-# -------------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+

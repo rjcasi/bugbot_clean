@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
   <h1>Sorting Arena</h1>
-  <p>Quicksort vs Mergesort — cycles of order emerging from disorder.</p>
-  <div>{{ plot_html|safe }}</div>
+  <p>This arena compares Quicksort and Mergesort with entropy visualizations.</p>
+
+  <div>
+    {{ plot_html|safe }}
+  </div>
 {% endblock %}

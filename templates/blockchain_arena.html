@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Blockchain Arena</h1>
+  <p>Transactions confirmed into blocks, showing pending transaction counts over time.</p>
+
+  <div>
+    {{ plot_html|safe }}
+  </div>
+{% endblock %}

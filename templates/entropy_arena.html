@@ -1,14 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
   <h1>Entropy Arena</h1>
-  <p>Visualize brute force complexity: MD5 vs SHA-256 runtime and attempts.</p>
-  <div>{{ plot_runtime|safe }}</div>
-  <div>{{ plot_attempts|safe }}</div>
-{% endblock %}
+  <p>Brute force runtime and attempts vs password length.</p>
 
-{% if bcrypt_hash %}
-  <h2>Advanced Hashing</h2>
-  <p><strong>Bcrypt:</strong> {{ bcrypt_hash }}</p>
-  <p><strong>Argon2:</strong> {{ argon2_hash }}</p>
-  <p>These algorithms are deliberately slow and memory-hard, making brute force attacks impractical.</p>
-{% endif %}
+  <h2>Runtime Plot</h2>
+  <div>
+    {{ plot_runtime|safe }}
+  </div>
+
+  <h2>Attempts Plot</h2>
+  <div>
+    {{ plot_attempts|safe }}
+  </div>
+
+  {% if bcrypt_hash %}
+    <h2>Advanced Hashing</h2>
+    <p>Bcrypt: {{ bcrypt_hash }}</p>
+    <p>Argon2: {{ argon2_hash }}</p>
+  {% endif %}
+{% endblock %}

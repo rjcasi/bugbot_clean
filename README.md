@@ -57,4 +57,24 @@ This panel dramatizes the **math of entropy collapse**:
 ---
 
 ⚡ **Tip for Recruiters:**  
-Run `python app.py` and visit `http://localhost:5000/entropy-arena` to watch entropy collapse curves live.
+Run `python app.py` and visit `http://localhost:5000/entropy-arena` to watch entropy collapse curves live.## 🤖 Robotics Arena
+
+The Robotics Arena demonstrates how cyber logic extends into physical systems, bridging software with mechanical control. It contains three interactive demos:
+
+- **Motor Control Demo**  
+  Simulates actuator control by setting and stopping motor speeds.  
+  *Recruiter Impact:* Shows understanding of control loops and actuator logic — the foundation of robotics.
+
+- **Arm Kinematics Visualization**  
+  Uses a 2‑joint planar arm to compute end‑effector positions.  
+  An interactive Plotly chart displays the reachable workspace.  
+  *Recruiter Impact:* Demonstrates math + robotics integration, highlighting how geometry and trigonometry drive robot motion.
+
+- **Line Following Simulation**  
+  Simulates sensor feedback (left, right, center) and robot adjustments.  
+  *Recruiter Impact:* Highlights sensor‑driven decision making and control logic, a core robotics principle.
+
+### How to Run
+1. Start the cockpit app:
+   ```bash
+   python app.py

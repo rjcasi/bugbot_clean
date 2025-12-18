@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>BugBot Cockpit Dashboard</h1>
+  <p>Welcome to the unified cockpit. Choose an arena to explore:</p>
+
+  <ul>
+    <li><a href="/sorting-arena">Sorting Arena</a> — Visualize Quicksort vs Mergesort with entropy cycles.</li>
+    <li><a href="/blockchain-arena">Blockchain Arena</a> — See transactions confirmed into blocks over time.</li>
+    <li><a href="/entropy-arena">Entropy Arena</a> — Explore brute force runtimes and attempts vs password length.</li>
+    <li><a href="/robotics-arena">Robotics Arena</a> — Demo motor control, kinematics, and line-following logic.</li>
+  </ul>
+{% endblock %}
